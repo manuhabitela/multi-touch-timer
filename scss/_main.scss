@@ -1,0 +1,87 @@
+html, body { height: 100%; }
+
+body {
+	background-color: #5f7d91;
+	color: whiteSmoke;
+	text-align: center;
+	&.play {
+		box-shadow: 0 0 $base-line-height*4 white inset;
+		-webkit-box-shadow: 0 0 $base-line-height*4 white inset;
+	}
+	&.dring {
+		box-shadow: 0 0 $base-line-height*4 #293081 inset;
+		-webkit-box-shadow: 0 0 $base-line-height*4 #293081 inset;
+	}
+}
+
+p {
+	@extend .impressed;
+	font-weight: bold;
+	margin: 0;
+	padding: $base-line-height;
+	img {
+		vertical-align: middle;
+		max-height: $base-line-height*2;
+	}
+}
+
+.help-top, .help-bottom {
+	position: absolute;
+	left: 0;
+	right: 0;
+	z-index: 5;
+}
+
+.help-top {
+	top: 0;
+	height: $base-line-height*4;
+}
+
+.help-bottom {
+	bottom: 0;
+	height: $base-line-height*8;
+}
+
+@include keyframes(toggle) {
+	from { opacity: 1; }
+	to { opacity: 0; }
+}
+
+#timer {
+	position: relative;
+	z-index: 10;
+	height: 100%;
+	padding-top: $base-line-height*4;
+	padding-bottom: $base-line-height*8;
+	font-size: $base-font-size*4;
+	line-height: $base-line-height*6;
+	@extend .impressed;
+	> span:not(:last-child):after {
+		content: ':';	
+	}
+	&.play > span:not(:last-child):after {
+		@include animation(toggle 2s steps(2) infinite);
+	}
+}
+
+@include keyframes(drag) {
+	from { @include transform(translateY($base-line-height/2)); }
+	to { @include transform(translateY(-$base-line-height/2)); }
+}
+
+@include keyframes(scale) {
+	from { @include transform(scale(1)); }
+	to { @include transform(scale(1.25)); }
+}
+
+img[src="img/Swipe_Up.png"] {
+	@include animation(drag 2s 3 alternate);
+}
+
+img[src="img/Spread.png"] {
+	@include animation(scale 2s 3 alternate);
+}
+
+img[src="img/Double_Tap.png"] {
+	@include animation(toggle 1s 2 linear);
+}

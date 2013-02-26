@@ -1,0 +1,29 @@
+//classes "helpers" qui ne concernent rien en particulier mais qui vont nous aider tout au long du projet
+
+.ir {
+	@include image-replacement; 
+}
+
+.hidden {
+	@include hidden; 
+}
+
+.visuallyhidden {
+	@include visually-hidden; 
+}
+
+.invisible {
+	@include invisible; 
+}
+
+.clearfix {
+	@include micro-clearfix; 
+}
+
+.embossed {
+   text-shadow: 0 1px 0 rgba(0, 0, 0, 0.8), 0 -1px 0 rgba(255, 255, 255, 1.0); 
+}
+
+.impressed {
+   text-shadow: 0 1px 0 rgba(0, 0, 0, 0.5), 0 1px 0 rgba(255, 255, 255, 0.2);
+}
