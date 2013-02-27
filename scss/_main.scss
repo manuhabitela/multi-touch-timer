@@ -34,11 +34,13 @@ p {
 
 .help-top {
 	top: 0;
+	top: rem(33px); //mozilla dev derby frame
 	height: $base-line-height*4;
 }
 
 .help-bottom {
 	bottom: 0;
+	bottom: rem(33px); //mozilla dev derby frame
 	height: $base-line-height*8;
 }
 
@@ -51,7 +53,7 @@ p {
 	position: relative;
 	z-index: 10;
 	height: 100%;
-	padding-top: $base-line-height*4;
+	padding-top: $base-line-height*4 + rem(33px); //mozilla dev derby frame;
 	padding-bottom: $base-line-height*8;
 	font-size: $base-font-size*4;
 	line-height: $base-line-height*6;
