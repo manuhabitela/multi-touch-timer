@@ -95,9 +95,9 @@ p img { vertical-align: middle; max-height: 2.625rem; }
 
 .help-top, .help-bottom { position: absolute; left: 0; right: 0; z-index: 5; }
 
-.help-top { top: 0; top: 2.0625rem; height: 5.25rem; }
+.help-top { top: 0; height: 5.25rem; }
 
-.help-bottom { bottom: 0; bottom: 2.0625rem; height: 10.5rem; }
+.help-bottom { bottom: 0; height: 10.5rem; }
 
 @-webkit-keyframes toggle { from { opacity: 1; }
   to { opacity: 0; } }
@@ -108,7 +108,7 @@ p img { vertical-align: middle; max-height: 2.625rem; }
 @keyframes toggle { from { opacity: 1; }
   to { opacity: 0; } }
 
-#timer { position: relative; z-index: 10; height: 100%; padding-top: 7.3125rem; padding-bottom: 10.5rem; font-size: 4rem; line-height: 7.875rem; }
+#timer { position: relative; z-index: 10; height: 100%; padding-top: 5.25rem; padding-bottom: 10.5rem; font-size: 4rem; line-height: 7.875rem; }
 #timer > span:not(:last-child):after { content: ':'; }
 #timer.play > span:not(:last-child):after { -webkit-animation: toggle 2s steps(2) infinite; -moz-animation: toggle 2s steps(2) infinite; animation: toggle 2s steps(2) infinite; }
 
