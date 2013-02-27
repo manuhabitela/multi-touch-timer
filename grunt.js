@@ -4,7 +4,7 @@ module.exports = function(grunt) {
 	grunt.initConfig({
 		concat: {
 			dist: {
-				src: [ 'js/hammer.js', 'js/microevent.js', 'js/timer.js', 'js/app.js', 'js/main.js'],
+				src: [ 'js/hammer.js', 'js/microevent.js', 'js/jquery.ba-throttle-debounce.min.js', 'js/timer.js', 'js/app.js', 'js/main.js'],
 				dest: 'dist/scripts.js'
 			}
 		},

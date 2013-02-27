@@ -15,27 +15,29 @@ var MultiTouchTimer = function(id, timer) {
 		drag_max_touches: 3,
 		transform_always_block: true
 	});
-	this.hammer.on('drag', MultiTouchTimer.Utils.throttle(function(ev) {
+	this.hammer.on('drag', Cowboy.throttle(100, true, function(ev) {
 		that.stopDaDring();
-		if (that.timer.playing) //we don't allow to change the time when the timer is playing
-			return false;
+		if (that.timer.playing || ev.gesture.touches.length !== 1) return false; //we don't allow to change the time when the timer is playing
 		var number = ev.gesture.direction == "up" ? 1 : ev.gesture.direction == "down" ?  -1 : null;
-		if (!number)
-			return false;
-		if (ev.gesture.touches.length == 1)
-			that.setTime('secs', number);
-		if (ev.gesture.touches.length == 2)
-			that.setTime('min', number);
-		if (ev.gesture.touches.length >= 3)
-			that.setTime('hours', number);
-	}, 175));
+		if (!number) return false;
+
+		number = number*1.5*ev.gesture.velocityY;
+		that.setTime('secs', number);
+	}));
+	this.hammer.on('drag', Cowboy.throttle(200, true, function(ev) {
+		if (that.timer.playing || ev.gesture.touches.length <= 1) return false;
+		var number = ev.gesture.direction == "up" ? 1 : ev.gesture.direction == "down" ?  -1 : null;
+		if (!number) return false;
+
+		that.setTime( (ev.gesture.touches.length == 2 ? 'min' : 'hours'), number);
+	}));
 	this.hammer.on('doubletap', function(ev) {
 		that.toggle(ev);
 	});
-	this.hammer.on('pinch', MultiTouchTimer.Utils.throttle(function(ev) {
+	this.hammer.on('pinch', Cowboy.throttle(100, true, function(ev) {
 		if (ev.gesture.scale > 2)
 			that.reset(ev);
-	}, 175));
+	}));
 
 	this.timer.bind('timeChange', function() {
 		that.updateDom();
@@ -63,10 +65,11 @@ MultiTouchTimer.prototype = {
 
 	setTime: function(time, number) {
 		//if we are scrolling with 2 or 3 fingers (minutes or hours) we don't set the time below 1min/1h
-		if (time == "min")
-			number = number == -1 && this.timer.remaining.time < 60 ? 0 : number*60;
-		if (time == "hours")
-			number = number == -1 && this.timer.remaining.time < 60*60 ? 0 : number*60*60;
+		if (number < 0 && time !== "secs" && this.timer.remaining.time < (time == "min" ? 60 : 60*60)) number = 0;
+		else {
+			if (time == "min") number = number*60 < 0 ? -60 : 60;
+			if (time == "hours") number = number*60*60 < 0 ? -60*60 : 60*60;
+		}
 		this.timer.setRemaining(this.timer.remaining.time + number);
 	},
 
@@ -131,30 +134,5 @@ MultiTouchTimer.Utils = {
 		else if (value < 10)
 			value = '0' + value;
 		return value;
-	},
-	//from underscore.js
-	throttle: function(func, wait) {
-		var context, args, timeout, result;
-		var previous = 0;
-		var later = function() {
-			previous = new Date();
-			timeout = null;
-			result = func.apply(context, args);
-		};
-		return function() {
-			var now = new Date();
-			var remaining = wait - (now - previous);
-			context = this;
-			args = arguments;
-			if (remaining <= 0) {
-				clearTimeout(timeout);
-				timeout = null;
-				previous = now;
-				result = func.apply(context, args);
-			} else if (!timeout) {
-				timeout = setTimeout(later, remaining);
-			}
-			return result;
-		};
 	}
 };
