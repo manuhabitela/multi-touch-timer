@@ -25,14 +25,14 @@ Timer.prototype = {
 	},
 
 	stop: function(silent) {
-		console.log('stop');
 		silent = silent || false;
 		if (!silent && this.playing)
 			this.trigger('stateChange', !this.playing);
 		this.playing = false;
 		clearInterval(this._playingInterval);
 		this._playingInterval = null;
-		if (!silent) this.trigger('stop');
+		if (!silent)
+			this.trigger('stop');
 	},
 
 	reset: function(silent) {

@@ -15,6 +15,7 @@ var MultiTouchTimer = function(id, timer) {
 		drag_max_touches: 3,
 		transform_always_block: true
 	});
+
 	this.hammer.on('drag', Cowboy.throttle(100, true, function(ev) {
 		that.stopDaDring();
 		if (that.timer.playing || ev.gesture.touches.length !== 1) return false; //we don't allow to change the time when the timer is playing
@@ -24,6 +25,7 @@ var MultiTouchTimer = function(id, timer) {
 		number = number*1.5*ev.gesture.velocityY;
 		that.setTime('secs', number);
 	}));
+
 	this.hammer.on('drag', Cowboy.throttle(200, true, function(ev) {
 		if (that.timer.playing || ev.gesture.touches.length <= 1) return false;
 		var number = ev.gesture.direction == "up" ? 1 : ev.gesture.direction == "down" ?  -1 : null;
@@ -31,9 +33,11 @@ var MultiTouchTimer = function(id, timer) {
 
 		that.setTime( (ev.gesture.touches.length == 2 ? 'min' : 'hours'), number);
 	}));
+
 	this.hammer.on('doubletap', function(ev) {
 		that.toggle(ev);
 	});
+
 	this.hammer.on('pinch', Cowboy.throttle(100, true, function(ev) {
 		if (ev.gesture.scale > 2)
 			that.reset(ev);
@@ -41,13 +45,22 @@ var MultiTouchTimer = function(id, timer) {
 
 	this.timer.bind('timeChange', function() {
 		that.updateDom();
+		if (localStorage) {
+			localStorage.setItem('leimiMultiTouchTimer.time', that.timer.remaining.time);
+			localStorage.setItem('leimiMultiTouchTimer.date', Math.round(new Date().getTime()));
+		}
 	});
+
 	this.timer.bind('stateChange', function(state) {
 		that.updateClass(state);
+		if (localStorage) localStorage.setItem('leimiMultiTouchTimer.playing', state ? 1 : 0);
 	});
+
 	this.timer.bind('done', function() {
 		that.driiiiing();
 	});
+
+	this.restorePreviousState();
 };
 
 MultiTouchTimer.prototype = {
@@ -124,6 +137,28 @@ MultiTouchTimer.prototype = {
 		this.dring();
 
 		this.updateClass(this.timer.playing);
+	},
+
+	restorePreviousState: function() {
+		if (!localStorage) return false;
+		var prevTime = localStorage.getItem('leimiMultiTouchTimer.time'),
+			prevState = localStorage.getItem('leimiMultiTouchTimer.playing') !== null ?
+				localStorage.getItem('leimiMultiTouchTimer.playing')*1
+				: null,
+			prevDate = localStorage.getItem('leimiMultiTouchTimer.date');
+		if (prevTime !== null) {
+			if (!prevState) {
+				this.timer.setRemaining(prevTime*1);
+				console.log(prevState);
+			}
+			else if (prevDate !== null) {
+				var now = Math.round(new Date().getTime()),
+					diff = (now - prevDate)/1000;
+				this.stopDaDring();
+				this.timer.setRemaining(prevTime - Math.round(diff));
+				this.timer.start();
+			}
+		}
 	}
 };
 
